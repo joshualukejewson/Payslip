@@ -6,9 +6,9 @@ import csv
 class Shift():
     BASE_RATE = 27.64
 
-    def __init__(self, date):
+    def __init__(self):
         self.total = 0
-        self.name = date
+        self.name = ""
         self.total_hours_worked = 0
         self.total_tax = 0
 
@@ -21,11 +21,17 @@ class Shift():
     """
 
 
+def get_date():
+    date = input("Enter date of shift (YYYY-MM-DD): ")
+    return datetime.date.fromisoformat(date)
+
+
 def main():
 
-    date = input("Enter date of shift (YYYY-MM-DD): ")
-    date = datetime.date.fromisoformat(date)
-    shift = Shift(date)
+    shift = Shift()
+
+    date = get_date()
+    shift.name = f"Shift: {date}"
 
     print(date)
     print(shift)
