@@ -4,7 +4,7 @@ import csv
 import re
 
 
-class Payslip():
+class Shift():
 # BASE PAY RATE and SATURDAY and SUNDAY rate.
     BASE_RATE = 27.64
     SATURDAY = 1.25
@@ -12,16 +12,15 @@ class Payslip():
 
     def __init__(self):
         self.total_earnt = 0
-        self.total_hours_worked = 0
-        self.total_tax = 0
+        self.hours_worked = 0
+        self.rate = 0
 
 # Print payslip information
     def __str__(self):
         return f"""
     {self.name}
-    Total hours worked: {self.total_hours_worked}
+    Total hours worked: {self.hours_worked} x ${self.rate}
     Total Payable: {self.total_earnt}
-    Total Tax Paid: {self.total_tax} 
     """
 # Set the name with the date format
     def set_name(self, name):
@@ -29,15 +28,30 @@ class Payslip():
 
 def main():
 
-    payslip = Payslip()
+    shift = Shift()
     date = get_date()
-    payslip.name = f"Shift: {date}"
+    shift.rate = get_rate(date, shift)
+    shift.name = f"Shift: {date}"
+    shift.hours_worked = get_hours_worked()
+    shift.total_earnt = get_total_earnt(shift)
 
-    hours_worked = get_hours_worked()
-    print(f"{hours_worked} hours")
+    write_to_file(shift)
 
-    print(date)
-    print(payslip)
+    print(shift)
+
+def write_to_file(shift):
+    ...
+    
+def get_total_earnt(s):
+    return (s.rate * s.hours_worked)
+
+def get_rate(d, shift):
+    if (0 <= d.month <= 4):
+        return shift.BASE_RATE
+    elif d.month == 5:
+        return shift.BASE_RATE * shift.SATURDAY
+    else:
+        return shift.BASE_RATE * shift.SUNDAY
 
 def get_date():
     date = input("Enter date of shift (YYYY-MM-DD): ")
@@ -60,7 +74,7 @@ def get_hours_worked():
     end_delta = datetime.timedelta(hours=end_hour, minutes=end_minutes)
 
     hours_diff = (end_delta - start_delta)
-    return (hours_diff.total_seconds() /60 / 60)
+    return round(hours_diff.total_seconds() /60 / 60, 3)
 
 if __name__ == "__main__":
     main()
